@@ -1,15 +1,26 @@
 import pyvista as pv
 import numpy as np
 from LoopStructural.datatypes import VectorPoints, ValuePoints
-from LoopStructural.modelling.feature import BaseFeature
-from LoopStructural.modelling.feature.fault import FaultSegment
-from LoopStructural.modelling import GeologicalModel
+from LoopStructural.modelling.features import BaseFeature
+from LoopStructural.modelling.features.fault import FaultSegment
+from LoopStructural import GeologicalModel
 from typing import Union, Optional, Callable
 
 
 class Loop3DView(pv.Plotter):
-    def __init__(self, model=None, *args, **kwargs):
+    def __init__(self, model=None, background='white', *args, **kwargs):
+        """Loop3DView is a subclass of pyvista. Plotter that is designed to
+        interface with the LoopStructural geological modelling package.
+
+        Parameters
+        ----------
+        model : GeologicalModel, optional
+            A loopstructural model used as reference for some methods, by default None
+        background : str, optional
+            colour for the background, by default 'white'
+        """
         super().__init__(*args, **kwargs)
+        self.set_background(background)
         self.model = model
 
     def _check_model(self, model: GeologicalModel) -> GeologicalModel:
@@ -32,6 +43,29 @@ class Loop3DView(pv.Plotter):
         vmax: Optional[float] = None,
         pyvista_kwargs: dict = {},
     ):
+        """Add an isosurface of a geological feature to the model
+
+        Parameters
+        ----------
+        geological_feature : BaseFeature
+            The geological feature to plot
+        value : Optional[Union[float, int, List[float]]], optional
+            isosurface value, or list of values, by default average value of feature
+        paint_with : Optional[BaseFeature], optional
+            Paint the surface with the value of another geological feature, by default None
+        colour : Optional[str], optional
+            colour of the surface, by default "red"
+        cmap : Optional[str], optional
+            matplotlib colourmap, by default None
+        opacity : Optional[float], optional
+            opacity of the surface, by default None
+        vmin : Optional[float], optional
+            minimum value of the colourmap, by default None
+        vmax : Optional[float], optional
+            maximum value of the colourmap, by default None
+        pyvista_kwargs : dict, optional
+            other parameters passed to Plotter.add_mesh, by default {}
+        """
 
         surfaces = geological_feature.surfaces(value)
 
@@ -69,7 +103,7 @@ class Loop3DView(pv.Plotter):
     def plot_block_model(self, cmap=None, model=None, pyvista_kwargs={}):
         model = self._check_model(model)
 
-        block, codes = self.model.get_block_model()
+        block, codes = model.get_block_model()
         self.add_mesh(block, cmap=cmap, **pyvista_kwargs)
 
     def plot_fault_displacements(
@@ -91,9 +125,7 @@ class Loop3DView(pv.Plotter):
         for f in fault_list:
             disp = f.displacementfeature.evaluate_value(bounding_box.vtk.points)
             displacement_value[~np.isnan(disp)] += disp[~np.isnan(disp)]
-        self.add_mesh(
-            bounding_box.vtk, scalars=displacement_value, cmap=cmap, **pyvista_kwargs
-        )
+        self.add_mesh(bounding_box.vtk, scalars=displacement_value, cmap=cmap, **pyvista_kwargs)
 
     def plot_model_surfaces(
         self,
@@ -106,12 +138,11 @@ class Loop3DView(pv.Plotter):
         displacement_cmap=None,
         pyvista_kwargs={},
     ):
-        if self.model is None and model is None:
-            raise ValueError("No model provided")
+        model = self._check_model(model)
         if strati:
             surfaces = model.get_stratigraphic_surfaces()
             for s in surfaces:
-                self.add_mesh(s.vtk, paint_with=paint_with, cmap=cmap, **pyvista_kwargs)
+                self.add_mesh(s.vtk, cmap=cmap, **pyvista_kwargs)
         if faults:
             faults = model.get_fault_surfaces()
             for f in faults:
@@ -134,7 +165,7 @@ class Loop3DView(pv.Plotter):
         for d in feature.get_data():
             if isinstance(d, ValuePoints):
                 if value:
-                    self.add_mesh(d.vtk, **pyvista_kwargs)
+                    self.add_mesh(d.vtk(), **pyvista_kwargs)
             if isinstance(d, VectorPoints):
                 if vector:
                     self.add_mesh(d.vtk(geom=geom, scale=scale), **pyvista_kwargs)
@@ -169,9 +200,26 @@ class Loop3DView(pv.Plotter):
                         else None
                     ),
                 ),
-                **pyvista_kwargs
+                **pyvista_kwargs,
             )
         if fault_volume:
             volume = fault.displacementfeature.scalar_field()
             volume.threshold(0.0)
             self.add_mesh(volume, **pyvista_kwargs)
+
+    def rotate(self, angles: np.ndarray):
+        """Rotate the camera by the given angles
+        order is roll, azimuth, elevation as defined by
+        pyvista
+
+        Parameters
+        ----------
+        angles : np.ndarray
+            roll, azimuth, elevation
+        """
+        self.camera.roll += angles[0]
+        self.camera.azimuth += angles[1]
+        self.camera.elevation += angles[2]
+
+    def display(self):
+        self.show(interactive=False)
