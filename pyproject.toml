@@ -38,7 +38,7 @@ dependencies = [
 dynamic = ['version']
 
 [project.optional-dependencies]
-
+jupyter = ['pyvista[jupyter]']
 
 [project.urls]
 Documentation = 'https://Loop3d.org/LoopStructural/'
