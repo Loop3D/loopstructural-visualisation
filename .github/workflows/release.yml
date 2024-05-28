@@ -16,7 +16,7 @@ jobs:
           black .
       - name: Lint with ruff
         run: |
-          ruff check LoopStructural --fix
+          ruff check . --fix
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "style: style fixes by ruff and autoformatting by black"
@@ -38,7 +38,7 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     needs: ["linting","make_sdist"]
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: GoogleCloudPlatform/release-please-action@v4
         id: release
