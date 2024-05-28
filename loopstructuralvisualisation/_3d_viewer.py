@@ -2,9 +2,10 @@ import pyvista as pv
 import numpy as np
 from LoopStructural.datatypes import VectorPoints, ValuePoints
 from LoopStructural.modelling.features import BaseFeature
-from LoopStructural.modelling.features.fault import FaultSegment
+
+# from LoopStructural.modelling.features.fault import FaultSegment
 from LoopStructural import GeologicalModel
-from typing import Union, Optional, Callable
+from typing import Union, Optional
 
 
 class Loop3DView(pv.Plotter):
