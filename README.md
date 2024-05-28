@@ -1,2 +1,5 @@
 # loopstructural-visualisation
-Visualisation module for LoopStructural
+
+A LoopStructural interface for pyvista's Plotter class. 
+
+
