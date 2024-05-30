@@ -34,12 +34,13 @@ classifiers = [
 dependencies = [
     "numpy>=1.18",
     "pyvista",
+    "LoopStructural",
 ]
 dynamic = ['version']
 
 [project.optional-dependencies]
-jupyter = ['pyvista[jupyter]']
-
+jupyter = ['pyvista[jupyter]',]
+all = ['pyvista[all]']
 [project.urls]
 Documentation = 'https://Loop3d.org/LoopStructural/'
 "Bug Tracker" = 'https://github.com/loop3d/loopstructural-visualisation/issues'
