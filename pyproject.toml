@@ -33,7 +33,7 @@ classifiers = [
 ]
 dependencies = [
     "numpy>=1.18",
-    "pyvista",
+    "pyvista>=0.42",
     "LoopStructural",
 ]
 dynamic = ['version']
