@@ -43,7 +43,7 @@ class Loop3DView(pv.Plotter):
         vmin: Optional[float] = None,
         vmax: Optional[float] = None,
         pyvista_kwargs: dict = {},
-        scale_bar: bool = False,
+        scalar_bar: bool = False,
         slicer: bool = False,
     ):
         """Add an isosurface of a geological feature to the model
@@ -105,7 +105,7 @@ class Loop3DView(pv.Plotter):
                 opacity=opacity,
                 **pyvista_kwargs,
             )
-        if not scale_bar:
+        if paint_with is not None and not scalar_bar:
             self.remove_scalar_bar('values')
 
     def plot_scalar_field(
@@ -173,7 +173,7 @@ class Loop3DView(pv.Plotter):
         volume['displacement'] = displacement_value
         self.add_mesh(volume, cmap=cmap, **pyvista_kwargs)
         if not scalar_bar:
-            self.remove_scalar_bar('dispalcement')
+            self.remove_scalar_bar('displacement')
 
     def plot_model_surfaces(
         self,
