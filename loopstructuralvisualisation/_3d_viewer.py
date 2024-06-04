@@ -7,6 +7,7 @@ from LoopStructural.modelling.features import BaseFeature
 from LoopStructural import GeologicalModel
 from LoopStructural.utils import getLogger
 from typing import Union, Optional, List
+from ._colours import random_colour
 
 logger = getLogger(__name__)
 
@@ -76,7 +77,7 @@ class Loop3DView(pv.Plotter):
         surfaces = geological_feature.surfaces(value)
         meshes = []
         for surface in surfaces:
-            s = surface.vtk
+            s = surface.vtk()
             if paint_with is not None:
                 clim = [paint_with.min(), paint_with.max()]
                 if vmin is not None:
@@ -92,22 +93,26 @@ class Loop3DView(pv.Plotter):
                 s.set_active_scalars("values")
                 colour = None
             meshes.append(s)
-        if slicer:
-            self.add_mesh_clip_plane(
-                pv.MultiBlock(meshes).combine(),
-                color=colour,
-                cmap=cmap,
-                opacity=opacity,
-                **pyvista_kwargs,
-            )
-        else:
-            self.add_mesh(
-                pv.MultiBlock(meshes).combine(),
-                color=colour,
-                cmap=cmap,
-                opacity=opacity,
-                **pyvista_kwargs,
-            )
+        try:
+
+            if slicer:
+                self.add_mesh_clip_plane(
+                    pv.MultiBlock(meshes).combine(),
+                    color=colour,
+                    cmap=cmap,
+                    opacity=opacity,
+                    **pyvista_kwargs,
+                )
+            else:
+                self.add_mesh(
+                    pv.MultiBlock(meshes).combine(),
+                    color=colour,
+                    cmap=cmap,
+                    opacity=opacity,
+                    **pyvista_kwargs,
+                )
+        except ValueError:
+            logger.warning("No surfaces to plot")
         if paint_with is not None and not scalar_bar:
             self.remove_scalar_bar('values')
 
@@ -146,7 +151,8 @@ class Loop3DView(pv.Plotter):
         model = self._check_model(model)
 
         block, codes = model.get_block_model()
-        cmap = self._build_stratigraphic_cmap(model)
+        if cmap is None:
+            cmap = self._build_stratigraphic_cmap(model)
         if "clim" not in pyvista_kwargs:
             pyvista_kwargs["clim"] = (np.min(block['stratigraphy']), np.max(block['stratigraphy']))
         if threshold is not None:
@@ -179,7 +185,7 @@ class Loop3DView(pv.Plotter):
         pts = bounding_box.regular_grid()
         displacement_value = np.zeros(pts.shape[0])
         for f in fault_list:
-            disp = f.displacementfeature.evaluate_value(bounding_box.vtk.points)
+            disp = f.displacementfeature.evaluate_value(bounding_box.vtk().points)
             displacement_value[~np.isnan(disp)] += disp[~np.isnan(disp)]
         volume = bounding_box.vtk()
         volume['displacement'] = displacement_value
@@ -198,6 +204,14 @@ class Loop3DView(pv.Plotter):
                 if g == "faults":
                     continue
                 for v in model.stratigraphic_column[g].values():
+                    if not isinstance(v['colour'], str):
+                        try:
+                            v['colour'] = colors.to_hex(v['colour'])
+                        except ValueError:
+                            logger.warning(
+                                f"Cannot convert colour {v['colour']} to hex, using default"
+                            )
+                            v['colour'] = random_colour()
                     data.append((v["id"], v["colour"]))
                     colours.append(v["colour"])
                     boundaries.append(v["id"])  # print(u,v)
