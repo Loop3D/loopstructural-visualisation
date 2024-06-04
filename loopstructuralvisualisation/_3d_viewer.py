@@ -5,7 +5,10 @@ from LoopStructural.modelling.features import BaseFeature
 
 # from LoopStructural.modelling.features.fault import FaultSegment
 from LoopStructural import GeologicalModel
+from LoopStructural.utils import getLogger
 from typing import Union, Optional, List
+
+logger = getLogger(__name__)
 
 
 class Loop3DView(pv.Plotter):
