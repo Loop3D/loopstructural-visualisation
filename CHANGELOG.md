@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.4](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.3...v0.1.4) (2024-06-04)
+
+
+### Bug Fixes
+
+* adding ls logger ([0914d43](https://github.com/Loop3D/loopstructural-visualisation/commit/0914d439ef1606dfb57a3f1e283b991a5149d9f8))
+* adding random colour generator and rbga to hex ([ccc3994](https://github.com/Loop3D/loopstructural-visualisation/commit/ccc3994f44d34d069dcb958b4f45e6a50a652cce))
+* adding threshold to block model ([8c3c0c6](https://github.com/Loop3D/loopstructural-visualisation/commit/8c3c0c62ab1a6565892098cf9fc591e4a817f408))
+* updating to .vtk as a method ([b5ab78c](https://github.com/Loop3D/loopstructural-visualisation/commit/b5ab78c2503a59578133ad75bd329a87c10846f8))
+
 ## [0.1.3](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.2...v0.1.3) (2024-05-31)
 
 
