@@ -5,7 +5,7 @@ from LoopStructural.modelling.features import BaseFeature
 
 # from LoopStructural.modelling.features.fault import FaultSegment
 from LoopStructural import GeologicalModel
-from typing import Union, Optional
+from typing import Union, Optional, List
 
 
 class Loop3DView(pv.Plotter):
@@ -138,16 +138,25 @@ class Loop3DView(pv.Plotter):
         pyvista_kwargs={},
         scalar_bar: bool = False,
         slicer: bool = False,
+        threshold: Optional[Union[float, List[float]]] = None,
     ):
         model = self._check_model(model)
 
         block, codes = model.get_block_model()
+        cmap = self._build_stratigraphic_cmap(model)
+        if "clim" not in pyvista_kwargs:
+            pyvista_kwargs["clim"] = (np.min(block['stratigraphy']), np.max(block['stratigraphy']))
+        if threshold is not None:
+            if isinstance(threshold, float):
+                block = block.threshold(threshold)
+            elif isinstance(threshold, (list, tuple, np.ndarray)) and len(threshold) == 2:
+                block = block.threshold((threshold[0], threshold[1]))
         if slicer:
             self.add_mesh_clip_plane(block, cmap=cmap, **pyvista_kwargs)
         else:
             self.add_mesh(block, cmap=cmap, **pyvista_kwargs)
         if not scalar_bar:
-            self.remove_scalar_bar('statigraphy')
+            self.remove_scalar_bar('stratigraphy')
 
     def plot_fault_displacements(
         self,
@@ -175,6 +184,26 @@ class Loop3DView(pv.Plotter):
         if not scalar_bar:
             self.remove_scalar_bar('displacement')
 
+    def _build_stratigraphic_cmap(self, model):
+        try:
+            import matplotlib.colors as colors
+
+            colours = []
+            boundaries = []
+            data = []
+            for g in model.stratigraphic_column.keys():
+                if g == "faults":
+                    continue
+                for v in model.stratigraphic_column[g].values():
+                    data.append((v["id"], v["colour"]))
+                    colours.append(v["colour"])
+                    boundaries.append(v["id"])  # print(u,v)
+            cmap = colors.ListedColormap(colours).colors
+        except ImportError:
+            logger.warning("Cannot use predefined colours as I can't import matplotlib")
+            cmap = "tab20"
+        return cmap
+
     def plot_model_surfaces(
         self,
         strati=True,
@@ -188,16 +217,22 @@ class Loop3DView(pv.Plotter):
         scalar_bar: bool = False,
     ):
         model = self._check_model(model)
+
         if strati:
+            strati_surfaces = []
             surfaces = model.get_stratigraphic_surfaces()
+            if cmap is None:
+                cmap = self._build_stratigraphic_cmap(model)
+                print(cmap)
             for s in surfaces:
-                self.add_mesh(s.vtk, cmap=cmap, **pyvista_kwargs)
-                if not scalar_bar:
-                    self.remove_scalar_bar()
+                strati_surfaces.append(s.vtk)
+            self.add_mesh(pv.MultiBlock(strati_surfaces), cmap=cmap, **pyvista_kwargs)
+            if not scalar_bar:
+                self.remove_scalar_bar()
         if faults:
             faults = model.get_fault_surfaces()
             for f in faults:
-                self.add_mesh(f.vtk, colour=fault_colour, **pyvista_kwargs)
+                self.add_mesh(f.vtk, color=fault_colour, **pyvista_kwargs)
 
     def plot_vector_field(self, geological_feature, scale=1.0, pyvista_kwargs={}):
         vectorfield = geological_feature.vector_field()
