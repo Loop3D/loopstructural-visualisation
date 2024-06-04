@@ -181,7 +181,7 @@ class Loop3DView(pv.Plotter):
         for f in fault_list:
             disp = f.displacementfeature.evaluate_value(bounding_box.vtk.points)
             displacement_value[~np.isnan(disp)] += disp[~np.isnan(disp)]
-        volume = bounding_box.vtk
+        volume = bounding_box.vtk()
         volume['displacement'] = displacement_value
         self.add_mesh(volume, cmap=cmap, **pyvista_kwargs)
         if not scalar_bar:
@@ -228,14 +228,14 @@ class Loop3DView(pv.Plotter):
                 cmap = self._build_stratigraphic_cmap(model)
                 print(cmap)
             for s in surfaces:
-                strati_surfaces.append(s.vtk)
+                strati_surfaces.append(s.vtk())
             self.add_mesh(pv.MultiBlock(strati_surfaces), cmap=cmap, **pyvista_kwargs)
             if not scalar_bar:
                 self.remove_scalar_bar()
         if faults:
             faults = model.get_fault_surfaces()
             for f in faults:
-                self.add_mesh(f.vtk, color=fault_colour, **pyvista_kwargs)
+                self.add_mesh(f.vtk(), color=fault_colour, **pyvista_kwargs)
 
     def plot_vector_field(self, geological_feature, scale=1.0, pyvista_kwargs={}):
         vectorfield = geological_feature.vector_field()
@@ -276,7 +276,7 @@ class Loop3DView(pv.Plotter):
         if surface:
 
             surface = fault.surfaces([0])[0]
-            self.add_mesh(surface.vtk, **pyvista_kwargs)
+            self.add_mesh(surface.vtk(), **pyvista_kwargs)
         if slip_vector:
 
             vectorfield = fault[1].vector_field()
