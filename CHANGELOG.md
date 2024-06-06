@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.4...v0.1.5) (2024-06-04)
+
+
+### Bug Fixes
+
+* addin old loopstructural plots ([e716096](https://github.com/Loop3D/loopstructural-visualisation/commit/e7160967272fabb172c43a5c7a476540bdbd2715))
+
 ## [0.1.4](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.3...v0.1.4) (2024-06-04)
 
 
