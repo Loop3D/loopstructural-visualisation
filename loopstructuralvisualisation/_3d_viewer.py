@@ -127,7 +127,7 @@ class Loop3DView(pv.Plotter):
         scalar_bar: bool = False,
         slicer=False,
     ):
-        volume = geological_feature.scalar_field()
+        volume = geological_feature.scalar_field().vtk()
         if vmin is not None:
             pyvista_kwargs["clim"][0] = vmin
         if vmax is not None:
@@ -151,6 +151,8 @@ class Loop3DView(pv.Plotter):
         model = self._check_model(model)
 
         block, codes = model.get_block_model()
+        block = block.vtk()
+        block.set_active_scalars('stratigraphy')
         if cmap is None:
             cmap = self._build_stratigraphic_cmap(model)
         if "clim" not in pyvista_kwargs:
