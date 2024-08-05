@@ -1,38 +1,42 @@
 {% set name = "loopstructuralvisualisation" %}
+{% set version = "0.1.6" %}
 
 package:
-  name: "{{ name|lower }}"
-  version: "{{ environ.get('GIT_DESCRIBE_TAG', '') }}"
+  name: {{ name|lower }}
+  version: {{ version }}
 
 source:
-  git_url: https://github.com/Loop3D/loopstructural-visualisation
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/loopstructuralvisualisation-{{ version }}.tar.gz
+  sha256: dd81f40d32fb470c8128770ed98f19a6e5e069d72eb26a23a93839b2f305c77d
 
 build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
-  script: "{{ PYTHON }} -m pip install ."
 
 requirements:
   host:
-    - python
+    - python >=3.8
+    - setuptools
+    - pip
   run:
-    - LoopStructural
-    - pyvista
-
-test:
-  import:
-    - numpy
-    - pandas
+    - python >=3.8
+    - numpy >=1.18
+    - pyvista >=0.42
     - loopstructural
 
+test:
+  imports:
+    - loopstructuralvisualisation
+  commands:
+    - pip check
+  requires:
+    - pip
 
 about:
-  home: "https://github.com/Loop3D/LoopStructural"
+  summary: 3D geological modelling
   license: MIT
-  license_family: MIT
-  license_file: 
-  summary: "Implicit 3D geological modelling library"
-  doc_url: "https://loop3d.github.io/LoopStructural/"
-  dev_url: 
+  license_file: LICENSE
 
 extra:
   recipe-maintainers:
