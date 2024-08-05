@@ -20,7 +20,7 @@ requirements:
     - python >=3.8
     - numpy >=1.18
     - pyvista >=0.42
-    - loopstructural >=1.6.0
+    - loopstructural >=v1.6.0
 
 test:
   import:
