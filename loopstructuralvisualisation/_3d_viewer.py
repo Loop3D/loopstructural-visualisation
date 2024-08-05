@@ -242,7 +242,6 @@ class Loop3DView(pv.Plotter):
             surfaces = model.get_stratigraphic_surfaces()
             if cmap is None:
                 cmap = self._build_stratigraphic_cmap(model)
-                print(cmap)
             for s in surfaces:
                 strati_surfaces.append(s.vtk())
             self.add_mesh(pv.MultiBlock(strati_surfaces), cmap=cmap, **pyvista_kwargs)
