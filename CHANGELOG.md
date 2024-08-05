@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.5...v0.1.6) (2024-06-06)
+
+
+### Bug Fixes
+
+* update for ls scalar field changes ([553cd89](https://github.com/Loop3D/loopstructural-visualisation/commit/553cd89f978f2a025ae446cc3e4a6f40cb24e167))
+
 ## [0.1.5](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.4...v0.1.5) (2024-06-04)
 
 
