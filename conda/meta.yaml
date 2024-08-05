@@ -13,12 +13,20 @@ build:
 
 requirements:
   host:
-    - python
+    - python >=3.8
+    - setuptools
+    - pip
   run:
-    - LoopStructural
-    - pyvista
+    - python >=3.8
+    - numpy >=1.18
+    - pyvista >=0.42
+    - loopstructural
 
-
+test:
+  import:
+    - numpy
+    - pandas
+    - loopstructural
 
 
 about:
