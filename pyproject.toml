@@ -34,7 +34,7 @@ classifiers = [
 dependencies = [
     "numpy>=1.18",
     "pyvista>=0.42",
-    "LoopStructural",
+    "LoopStructural>=1.6.0",
 ]
 dynamic = ['version']
 
