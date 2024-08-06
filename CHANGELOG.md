@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.7](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.6...v0.1.7) (2024-08-06)
+
+
+### Bug Fixes
+
+* adding v ([696f407](https://github.com/Loop3D/loopstructural-visualisation/commit/696f407447d140e1e9e6b70150537fd013edf4e3))
+* removing print ([95b007d](https://github.com/Loop3D/loopstructural-visualisation/commit/95b007d5d1eda8bbbd3fb9df4c0171e8128dd3ec))
+* restrict to LS&gt;=1.6.0 and adding conda build ([fcc9ca3](https://github.com/Loop3D/loopstructural-visualisation/commit/fcc9ca3cd458195e157a0bbefc1f5b985e300b84))
+
 ## [0.1.6](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.5...v0.1.6) (2024-06-06)
 
 
