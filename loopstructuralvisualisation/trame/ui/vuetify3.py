@@ -8,21 +8,13 @@ Therefore, the `ui` method implemented by this class utilizes the API of Vuetify
 
 from __future__ import annotations
 
-from turtle import onclick
 from typing import TYPE_CHECKING
 
-from cycler import V
-from trame.ui.vuetify3 import VAppLayout, SinglePageWithDrawerLayout
-from trame.widgets import html
+from trame.ui.vuetify3 import SinglePageWithDrawerLayout
 from trame.widgets import vuetify3 as vuetify
-from trame.widgets import trame
-from pyvista.trame.views import PyVistaLocalView
-from pyvista.trame.views import PyVistaRemoteLocalView
-from pyvista.trame.views import PyVistaRemoteView
+
 import pyvista
-from pyvista.trame.ui.base_viewer import BaseViewer
 from pyvista.trame.ui.vuetify3 import Viewer
-from trame.widgets.vuetify3 import VTreeview
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -36,7 +28,7 @@ class LoopViewer(Viewer):
         """
         super().__init__(*args, **kwargs)
 
-    def make_layout(self, *args, **kwargs):
+    def make_layout(self, *args, **kwargs) -> AbstractLayout:
 
         return SinglePageWithDrawerLayout(*args, **kwargs)
 
@@ -76,7 +68,7 @@ class LoopViewer(Viewer):
             with vuetify.VCard():
 
                 for k, a in self.plotter.actors.items():
-                    if type(a) != pyvista.plotting.actor.Actor:
+                    if type(a) is not pyvista.plotting.actor.Actor:
                         continue
                     drawer.server.state[f"{k}__visibility"] = True
                     drawer.server.state[f"{k}__control_visibility"] = False
