@@ -1,13 +1,13 @@
 import pyvista as pv
 import numpy as np
 from LoopStructural.datatypes import VectorPoints, ValuePoints
-from LoopStructural.modelling.features import BaseFeature
+from LoopStructural.modelling.features import BaseFeature, StructuralFrame
 
 from LoopStructural.modelling.features.fault import FaultSegment
 from LoopStructural.datatypes import BoundingBox
 from LoopStructural import GeologicalModel
 from LoopStructural.utils import getLogger
-from typing import Union, Optional, List, Callable
+from typing import Union, Optional, List
 from ._colours import random_colour
 
 logger = getLogger(__name__)
@@ -471,6 +471,30 @@ class Loop3DView(pv.Plotter):
         name: Optional[str] = None,
         pyvista_kwargs: dict = {},
     ) -> List[pv.Actor]:
+        """Add the data associated with a feature to the plotter
+
+        Parameters
+        ----------
+        feature : Union[BaseFeature, StructuralFrame]
+            feature to add data from
+        value : bool, optional
+            whether to add value data, by default True
+        vector : bool, optional
+            whether to plot vector data, by default True
+        scale : Union[float, int], optional
+            vector scale, by default 10
+        geom : str, optional
+            vector glyph, by default "arrow"
+        name : Optional[str], optional
+            name to use in object list, by default None
+        pyvista_kwargs : dict, optional
+            additional kwargs to pass to pyvista add_mesh, by default {}
+
+        Returns
+        -------
+        List[pv.Actor]
+            list of actors added to the pv plotter
+        """
         if issubclass(type(feature), BaseFeature):
             feature = [feature]
 
@@ -499,8 +523,9 @@ class Loop3DView(pv.Plotter):
                         )
         return actors
 
-    def plot_fold(self, folded_feature, pyvista_kwargs={}):
+    def plot_fold(self, folded_feature: BaseFeature, pyvista_kwargs={}):
 
+        # folded_feature.
         pass
 
     def plot_fault(
