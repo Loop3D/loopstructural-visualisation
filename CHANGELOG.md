@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.8](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.7...v0.1.8) (2024-10-22)
+
+
+### Bug Fixes
+
+* avoiding cycle ([30c8142](https://github.com/Loop3D/loopstructural-visualisation/commit/30c8142d36629db9675bf93900d5ac8477745e19))
+
 ## [0.1.7](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.6...v0.1.7) (2024-08-06)
 
 
