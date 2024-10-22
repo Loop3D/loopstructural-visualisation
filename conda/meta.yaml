@@ -13,14 +13,14 @@ build:
 
 requirements:
   host:
-    - python >=3.8
+    - python 
     - setuptools
     - pip
   run:
-    - python >=3.8
+    - python 
     - numpy >=1.18
     - pyvista >=0.42
-    - loopstructural >=v1.6.0
+    - LoopStructural >=v1.6.0 
 
 test:
   import:
