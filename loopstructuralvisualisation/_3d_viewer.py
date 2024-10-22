@@ -1,5 +1,7 @@
 import pyvista as pv
 import numpy as np
+import re
+
 from LoopStructural.datatypes import VectorPoints, ValuePoints
 from LoopStructural.modelling.features import BaseFeature, StructuralFrame
 
@@ -25,20 +27,38 @@ class Loop3DView(pv.Plotter):
         background : str, optional
             colour for the background, by default 'white'
         """
+        if 'shape' in kwargs:
+            logger.warning('shape argument is not used in Loop3DView')
+            kwargs.pop('shape')
         super().__init__(*args, **kwargs)
         self.set_background(background)
         self.model = model
         self.objects = {}
 
+    def subplot(self, *args, **kwargs):
+        logger.warning('subplot is not supported in Loop3DView')
+        return self
+
     def add_mesh(self, *args, **kwargs):
         if 'name' not in kwargs:
             name = 'unnamed_object'
-            name = self.increment_name(name)
-            name.replace(' ', '_')  # spaces seem to cause issues for vue
             kwargs['name'] = name
             logger.warning(
                 f'No name provided, using {name}. Pass name argument to add_mesh to remove this error'
             )
+        kwargs['name'] = kwargs['name'].replace(' ', '_')
+        kwargs['name'] = re.sub(r'[^a-zA-Z0-9_$]', '_', kwargs['name'])
+        if kwargs['name'][0].isdigit():
+            kwargs['name'] = 'ls_' + kwargs['name']
+        if kwargs['name'][0] == '_':
+            kwargs['name'] = 'ls' + kwargs['name']
+        kwargs['name'] = self.increment_name(kwargs['name'])
+        if '__opacity' in kwargs['name']:
+            raise ValueError('Cannot use __opacity in name')
+        if '__visibility' in kwargs['name']:
+            raise ValueError('Cannot use __visibility in name')
+        if '__control_visibility' in kwargs['name']:
+            raise ValueError('Cannot use __control_visibility in name')
         return super().add_mesh(*args, **kwargs)
 
     def increment_name(self, name):
@@ -61,6 +81,20 @@ class Loop3DView(pv.Plotter):
         if model is None:
             raise ValueError("No model provided")
         return model
+
+    def _get_vector_scale(self, scale: Optional[Union[float, int]]) -> float:
+        autoscale = 0.0
+        if self.model is not None:
+            # automatically scale vector data to be 1% of the bounding box length
+            autoscale = self.model.bounding_box.length.max() * 0.05
+        if scale is None:
+            scale = autoscale
+        if scale > 10 * autoscale:
+            logger.warning(
+                f"Vector scale magnitude is half of the model bounding box length, is this correct?"
+            )
+
+        return scale
 
     def plot_surface(
         self,
@@ -433,7 +467,7 @@ class Loop3DView(pv.Plotter):
     def plot_vector_field(
         self,
         geological_feature: BaseFeature,
-        scale: float = 1.0,
+        scale: Optional[float] = None,
         name: Optional[str] = None,
         pyvista_kwargs: dict = {},
     ) -> pv.Actor:
@@ -459,6 +493,7 @@ class Loop3DView(pv.Plotter):
             name = geological_feature.name + '_vector_field'
         name = self.increment_name(name)  # , 'vector_field')
         vectorfield = geological_feature.vector_field()
+        scale = self._get_vector_scale(scale)
         return self.add_mesh(vectorfield.vtk(scale=scale), name=name, **pyvista_kwargs)
 
     def plot_data(
@@ -466,7 +501,7 @@ class Loop3DView(pv.Plotter):
         feature: Union[BaseFeature, StructuralFrame],
         value: bool = True,
         vector: bool = True,
-        scale: Union[float, int] = 10,
+        scale: Optional[Union[float, int]] = None,
         geom: str = "arrow",
         name: Optional[str] = None,
         pyvista_kwargs: dict = {},
@@ -497,7 +532,7 @@ class Loop3DView(pv.Plotter):
         """
         if issubclass(type(feature), BaseFeature):
             feature = [feature]
-
+        scale = self._get_vector_scale(scale)
         actors = []
         for f in feature:
             for d in f.get_data():
@@ -535,7 +570,7 @@ class Loop3DView(pv.Plotter):
         slip_vector: bool = True,
         displacement_scale_vector: bool = True,
         fault_volume: bool = True,
-        vector_scale: Union[float, int] = 200,
+        vector_scale: Optional[Union[float, int]] = None,
         name: Optional[str] = None,
         pyvista_kwargs: dict = {},
     ) -> List[pv.Actor]:
@@ -582,6 +617,7 @@ class Loop3DView(pv.Plotter):
             vector_name = self.increment_name(vector_name)
 
             vectorfield = fault[1].vector_field()
+            vector_scale = self._get_vector_scale(vector_scale)
             actors.append(
                 self.add_mesh(
                     vectorfield.vtk(
