@@ -102,7 +102,7 @@ jobs:
           skip_existing: true
           verbose: true
   upload_to_conda:
-    needs: ["release-please", "conda_build"]
+    needs: ["release-please", "conda-build"]
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false
