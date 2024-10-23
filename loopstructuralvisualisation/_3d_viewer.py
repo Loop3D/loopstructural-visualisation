@@ -383,7 +383,7 @@ class Loop3DView(pv.Plotter):
                     data.append((v["id"], v["colour"]))
                     colours.append(v["colour"])
                     boundaries.append(v["id"])  # print(u,v)
-            cmap = colors.ListedColormap(colours).colors
+            cmap = colors.ListedColormap(colours)
         except ImportError:
             logger.warning("Cannot use predefined colours as I can't import matplotlib")
             cmap = "tab20"
@@ -433,7 +433,7 @@ class Loop3DView(pv.Plotter):
             strati_surfaces = []
             surfaces = model.get_stratigraphic_surfaces()
             if cmap is None:
-                cmap = self._build_stratigraphic_cmap(model)
+                cmap = self._build_stratigraphic_cmap(model).colors
             for s in surfaces:
                 strati_surfaces.append(s.vtk())
             if name is None:
