@@ -31,15 +31,11 @@ classifiers = [
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
 ]
-dependencies = [
-    "numpy>=1.18",
-    "pyvista>=0.42",
-    "LoopStructural>=1.6.0",
-]
+dependencies = ["numpy>=1.18", "pyvista>=0.42", "LoopStructural>=1.6.0"]
 dynamic = ['version']
 
 [project.optional-dependencies]
-jupyter = ['pyvista[jupyter]',]
+jupyter = ['pyvista[jupyter]']
 all = ['pyvista[all]']
 [project.urls]
 Documentation = 'https://Loop3d.org/LoopStructural/'
@@ -50,8 +46,7 @@ Documentation = 'https://Loop3d.org/LoopStructural/'
 version = { attr = 'loopstructuralvisualisation.version.__version__' }
 
 [tool.setuptools.packages.find]
-include = ['loopstructuralvisualisation']
-
+include = ['loopstructuralvisualisation', 'loopstructuralvisualisation.*']
 
 
 [tool.isort]
