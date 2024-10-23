@@ -91,7 +91,7 @@ class Loop3DView(pv.Plotter):
             scale = autoscale
         if scale > 10 * autoscale:
             logger.warning(
-                f"Vector scale magnitude is half of the model bounding box length, is this correct?"
+                "Vector scale magnitude is half of the model bounding box length, is this correct?"
             )
 
         return scale
