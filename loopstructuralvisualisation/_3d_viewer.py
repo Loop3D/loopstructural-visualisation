@@ -40,7 +40,7 @@ class Loop3DView(pv.Plotter):
         return self
 
     def add_mesh(self, *args, **kwargs):
-        if 'name' not in kwargs:
+        if 'name' not in kwargs or kwargs['name'] is None:
             name = 'unnamed_object'
             kwargs['name'] = name
             logger.warning(
