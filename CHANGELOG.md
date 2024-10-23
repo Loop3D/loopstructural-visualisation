@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.9](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.8...v0.1.9) (2024-10-23)
+
+
+### Bug Fixes
+
+* add subdir to package ([2663673](https://github.com/Loop3D/loopstructural-visualisation/commit/2663673e8bb55d28b754ab9eeb9d6ed277b2e2d8))
+* ignore subplots and fix invalid actor names ([0d0bc20](https://github.com/Loop3D/loopstructural-visualisation/commit/0d0bc2064b85bb83fa2c3a830d48598f9ab12ef1))
+* random colour was calling invalid rng function ([0182b46](https://github.com/Loop3D/loopstructural-visualisation/commit/0182b46a956a31b533934bc857d64eb5a1dc946c))
+* return cmap not array of colours ([6d0a408](https://github.com/Loop3D/loopstructural-visualisation/commit/6d0a408a8486c05c0f39ab5411f46253c3d92694))
+
 ## [0.1.8](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.7...v0.1.8) (2024-10-22)
 
 
