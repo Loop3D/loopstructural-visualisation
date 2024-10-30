@@ -3,7 +3,7 @@ on:
 name: Release
 jobs:
   linting:
-    uses: Loop3d/workflows/.github/workflows/python-linting.yml@main
+    uses: Loop3d/workflows/.github/workflows/python_linting.yml@main
     with:
       folder-name: '.'
     
