@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.11](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.10...v0.1.11) (2024-12-18)
+
+
+### Bug Fixes
+
+* adding disk option to fault visualisation ([1fd1a9d](https://github.com/Loop3D/loopstructural-visualisation/commit/1fd1a9d3843e1266f4af03d6572558fa65f53527))
+* require ls &gt;1.6.4 and add fault ellipsoid ([e71b0ab](https://github.com/Loop3D/loopstructural-visualisation/commit/e71b0abd1b4e242582214c57d485cf2939b90899))
+* update bug with trame folder ([edd3188](https://github.com/Loop3D/loopstructural-visualisation/commit/edd318850fc7e97ef4c5e37d43511f9476046324))
+
 ## [0.1.10](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.9...v0.1.10) (2024-10-23)
 
 
