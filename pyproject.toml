@@ -46,7 +46,7 @@ Documentation = 'https://Loop3d.org/LoopStructural/'
 version = { attr = 'loopstructuralvisualisation.version.__version__' }
 
 [tool.setuptools.packages.find]
-include = ['loopstructuralvisualisation', 'loopstructuralvisualisation.*']
+include = ['loopstructuralvisualisation', 'loopstructuralvisualisation.*','loopstructuralvisualisation.*.*']
 
 
 [tool.isort]
