@@ -556,7 +556,7 @@ class Loop3DView(pv.Plotter):
                             geom = pv.Disc()
                             geom = geom.rotate_y(90)
                         else:
-                            raise ValueError(f"Unknown glyph type {geom}") 
+                            raise ValueError(f"Unknown glyph type {geom}")
                         actors.append(
                             self.add_mesh(
                                 d.vtk(geom=geom, scale=scale), name=name, **pyvista_kwargs
@@ -645,14 +645,14 @@ class Loop3DView(pv.Plotter):
             else:
                 volume_name = f'{fault.name}_volume_{name}'
             volume = fault.displacementfeature.scalar_field()
-            volume =volume.vtk().threshold(0.0)
+            volume = volume.vtk().threshold(0.0)
             if geom == "arrow":
                 geom = pv.Arrow()
             elif geom == "disc":
                 geom = pv.Disc()
-                geom = geom.rotate_y(90) 
+                geom = geom.rotate_y(90)
             else:
-                raise ValueError(f"Unknown glyph type {geom}") 
+                raise ValueError(f"Unknown glyph type {geom}")
             actors.append(self.add_mesh(volume, name=volume_name, **pyvista_kwargs))
         if len(actors) == 0:
             logger.warning(f"Nothing added to plot for {fault.name}")
