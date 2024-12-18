@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.10](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.9...v0.1.10) (2024-10-23)
+
+
+### Bug Fixes
+
+* catch case where name is passed but is None ([52ebf0f](https://github.com/Loop3D/loopstructural-visualisation/commit/52ebf0f0fe6ff253e782f8bc2832717df573e0fe))
+
 ## [0.1.9](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.8...v0.1.9) (2024-10-23)
 
 
