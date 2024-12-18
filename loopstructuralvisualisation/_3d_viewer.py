@@ -372,13 +372,12 @@ class Loop3DView(pv.Plotter):
                 if g == "faults":
                     continue
                 for v in model.stratigraphic_column[g].values():
-                    if not isinstance(v['colour'], str):
+                    colour = v.get("colour", None)
+                    if not isinstance(colour, str):
                         try:
-                            v['colour'] = colors.to_hex(v['colour'])
+                            v['colour'] = colors.to_hex(colour)
                         except ValueError:
-                            logger.warning(
-                                f"Cannot convert colour {v['colour']} to hex, using default"
-                            )
+                            logger.warning(f"Cannot convert colour {colour} to hex, using default")
                             v['colour'] = random_colour()
                     data.append((v["id"], v["colour"]))
                     colours.append(v["colour"])
@@ -551,6 +550,13 @@ class Loop3DView(pv.Plotter):
                         else:
                             object_name = f'{d.name}_vectors_{name}'
                         object_name = self.increment_name(object_name)  # , 'vectors')
+                        if geom == "arrow":
+                            geom = pv.Arrow()
+                        elif geom == "disc":
+                            geom = pv.Disc()
+                            geom = geom.rotate_y(90)
+                        else:
+                            raise ValueError(f"Unknown glyph type {geom}") 
                         actors.append(
                             self.add_mesh(
                                 d.vtk(geom=geom, scale=scale), name=name, **pyvista_kwargs
@@ -638,11 +644,43 @@ class Loop3DView(pv.Plotter):
             else:
                 volume_name = f'{fault.name}_volume_{name}'
             volume = fault.displacementfeature.scalar_field()
-            volume = volume.vtk().threshold(0.0)
+            volume =volume.vtk().threshold(0.0)
+            if geom == "arrow":
+                geom = pv.Arrow()
+            elif geom == "disc":
+                geom = pv.Disc()
+                geom = geom.rotate_y(90) 
+            else:
+                raise ValueError(f"Unknown glyph type {geom}") 
             actors.append(self.add_mesh(volume, name=volume_name, **pyvista_kwargs))
         if len(actors) == 0:
             logger.warning(f"Nothing added to plot for {fault.name}")
         return actors
+
+    def plot_fault_ellipsoid(
+        self, fault: FaultSegment, name: Optional[str] = None, pyvista_kwargs: dict = {}
+    ) -> pv.Actor:
+        """Plot the fault ellipsoid
+
+        Parameters
+        ----------
+        fault : FaultSegment
+            the fault to plot
+        name : Optional[str], optional
+            name of the object for pyvista, by default None
+        pyvista_kwargs : dict, optional
+            additional kwargs for the pyvista plotter, by default {}
+
+        Returns
+        -------
+        pv.Actor
+            actor added to the plot
+        """
+        if name is None:
+            name = fault.name + '_ellipsoid'
+        name = self.increment_name(name)
+        ellipsoid = fault.fault_ellipsoid()
+        return self.add_mesh(ellipsoid.vtk(), name=name, **pyvista_kwargs)
 
     def rotate(self, angles: np.ndarray):
         """Rotate the camera by the given angles

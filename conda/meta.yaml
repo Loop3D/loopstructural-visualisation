@@ -20,7 +20,7 @@ requirements:
     - python 
     - numpy >=1.18
     - pyvista >=0.42
-    - LoopStructural >=v1.6.0 
+    - LoopStructural >=v1.6.4
 
 test:
   import:
