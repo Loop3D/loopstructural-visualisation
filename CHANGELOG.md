@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.12](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.11...v0.1.12) (2024-12-18)
+
+
+### Bug Fixes
+
+* add import check so trame is not required ([d6aa391](https://github.com/Loop3D/loopstructural-visualisation/commit/d6aa391257604026261c45d22e6cc64792fc669c))
+
 ## [0.1.11](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.10...v0.1.11) (2024-12-18)
 
 
