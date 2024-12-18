@@ -578,6 +578,7 @@ class Loop3DView(pv.Plotter):
         fault_volume: bool = True,
         vector_scale: Optional[Union[float, int]] = None,
         name: Optional[str] = None,
+        geom: str = "arrow",
         pyvista_kwargs: dict = {},
     ) -> List[pv.Actor]:
         """Plot a fault including the surface, slip vector and displacement volume
