@@ -14,7 +14,7 @@ class StratigraphicColumnView:
         self.labels = labels
 
     def plot(self):
-        n_units = 0  # count how many discrete colours
+        n_units = 0  # count how many discrete colours (number of stratigraphic units)
         xmin = 0
         ymin = 0
         ymax = 1
@@ -22,21 +22,30 @@ class StratigraphicColumnView:
         fig = None
         if self.ax is None:
             fig, self.ax = plt.subplots(figsize=(2, 10))
-        patches = []
+        patches = []  #stores the individual stratigraphic unit polygons 
+
+        total_height = 0
         prev_coords = [0, 0]
-        for g in self.model.stratigraphic_column.keys():
+
+#iterate through groups, skipping faults 
+        for g in reversed(self.model.stratigraphic_column.keys()):
             if g == "faults":
                 continue
-            for u in self.model.stratigraphic_column[g].keys():
+#iterate through units in each group 
+            for u in reversed(self.model.stratigraphic_column[g].keys()):
                 n_units += 1
-                ymin = -self.model.stratigraphic_column[g][u]["min"]
+
+                ymax = total_height  
+                ymin = ymax - (self.model.stratigraphic_column[g][u]["max"] - self.model.stratigraphic_column[g][u]["min"])
+
                 if not np.isfinite(ymin):
-                    ymin = 0
-                ymax = -self.model.stratigraphic_column[g][u]["max"]
-                if not np.isfinite(ymax):
-                    ymax = prev_coords[1] + (prev_coords[1] - prev_coords[0]) * (1 + rng.random())
+                     ymin = prev_coords[1] - (prev_coords[1] - prev_coords[0]) * (1 + rng.random())
+             
+
+                total_height = ymin
 
                 prev_coords = (ymin, ymax)
+                
                 polygon_points = np.array([[xmin, ymin], [xmax, ymin], [xmax, ymax], [xmin, ymax]])
                 patches.append(Polygon(polygon_points))
                 xy = (0, ymin + (ymax - ymin) / 2)
@@ -66,7 +75,11 @@ class StratigraphicColumnView:
         p.set_array(np.array(colors))
 
         self.ax.add_collection(p)
-        self.ax.set_ylim(ymax + (ymax - ymin) * -2, 0)  # ax.set_ylim(0,ymax)
+        
+        self.ax.set_ylim(total_height - (total_height - prev_coords[0]) * 0.1, 0)
+
+        
         self.ax.axis("off")
 
         return fig
+ 
