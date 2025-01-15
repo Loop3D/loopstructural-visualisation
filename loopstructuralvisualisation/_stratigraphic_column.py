@@ -22,30 +22,32 @@ class StratigraphicColumnView:
         fig = None
         if self.ax is None:
             fig, self.ax = plt.subplots(figsize=(2, 10))
-        patches = []  #stores the individual stratigraphic unit polygons 
+        patches = []  # stores the individual stratigraphic unit polygons
 
         total_height = 0
         prev_coords = [0, 0]
 
-#iterate through groups, skipping faults 
+        # iterate through groups, skipping faults
         for g in reversed(self.model.stratigraphic_column.keys()):
             if g == "faults":
                 continue
-#iterate through units in each group 
+            # iterate through units in each group
             for u in reversed(self.model.stratigraphic_column[g].keys()):
                 n_units += 1
 
-                ymax = total_height  
-                ymin = ymax - (self.model.stratigraphic_column[g][u]["max"] - self.model.stratigraphic_column[g][u]["min"])
+                ymax = total_height
+                ymin = ymax - (
+                    self.model.stratigraphic_column[g][u]["max"]
+                    - self.model.stratigraphic_column[g][u]["min"]
+                )
 
                 if not np.isfinite(ymin):
-                     ymin = prev_coords[1] - (prev_coords[1] - prev_coords[0]) * (1 + rng.random())
-             
+                    ymin = prev_coords[1] - (prev_coords[1] - prev_coords[0]) * (1 + rng.random())
 
                 total_height = ymin
 
                 prev_coords = (ymin, ymax)
-                
+
                 polygon_points = np.array([[xmin, ymin], [xmax, ymin], [xmax, ymax], [xmin, ymax]])
                 patches.append(Polygon(polygon_points))
                 xy = (0, ymin + (ymax - ymin) / 2)
@@ -75,11 +77,9 @@ class StratigraphicColumnView:
         p.set_array(np.array(colors))
 
         self.ax.add_collection(p)
-        
+
         self.ax.set_ylim(total_height - (total_height - prev_coords[0]) * 0.1, 0)
 
-        
         self.ax.axis("off")
 
         return fig
- 
