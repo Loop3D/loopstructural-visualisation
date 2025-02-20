@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.13](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.12...v0.1.13) (2025-01-15)
+
+
+### Bug Fixes
+
+* Stratigraphic column visualiser display in correct order ([7dcd5b8](https://github.com/Loop3D/loopstructural-visualisation/commit/7dcd5b8c06b637d33ac2e7c5e02bb52a1991cfdd))
+* Stratigraphic column visualiser display in correct order ([7dcd5b8](https://github.com/Loop3D/loopstructural-visualisation/commit/7dcd5b8c06b637d33ac2e7c5e02bb52a1991cfdd))
+
+## [0.1.12](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.11...v0.1.12) (2024-12-18)
+
+
+### Bug Fixes
+
+* add import check so trame is not required ([d6aa391](https://github.com/Loop3D/loopstructural-visualisation/commit/d6aa391257604026261c45d22e6cc64792fc669c))
+
 ## [0.1.11](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.10...v0.1.11) (2024-12-18)
 
 
