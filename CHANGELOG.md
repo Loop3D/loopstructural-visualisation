@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.14](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.13...v0.1.14) (2025-02-20)
+
+
+### Bug Fixes
+
+* scaling of vector fields is now consistent for different scale models. ([49450bb](https://github.com/Loop3D/loopstructural-visualisation/commit/49450bb0514e58f3da5ee3af98bd307a3fc8c4d8))
+
 ## [0.1.13](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.12...v0.1.13) (2025-01-15)
 
 
