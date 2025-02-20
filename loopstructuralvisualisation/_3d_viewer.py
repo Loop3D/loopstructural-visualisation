@@ -9,7 +9,7 @@ from LoopStructural.modelling.features.fault import FaultSegment
 from LoopStructural.datatypes import BoundingBox
 from LoopStructural import GeologicalModel
 from LoopStructural.utils import getLogger
-from typing import Union, Optional, List
+from typing import Callable, Union, Optional, List
 from ._colours import random_colour
 
 logger = getLogger(__name__)
@@ -85,13 +85,15 @@ class Loop3DView(pv.Plotter):
     def _get_vector_scale(self, scale: Optional[Union[float, int]]) -> float:
         autoscale = 0.0
         if self.model is not None:
-            # automatically scale vector data to be 1% of the bounding box length
+            # automatically scale vector data to be 5% of the bounding box length
             autoscale = self.model.bounding_box.length.max() * 0.05
         if scale is None:
             scale = autoscale
+        else:
+            scale = scale * autoscale
         if scale > 10 * autoscale:
             logger.warning(
-                "Vector scale magnitude is half of the model bounding box length, is this correct?"
+                "Vector scale magnitude greater than half of the model bounding box length, is this correct?"
             )
 
         return scale
@@ -110,6 +112,7 @@ class Loop3DView(pv.Plotter):
         scalar_bar: bool = False,
         slicer: bool = False,
         name: Optional[str] = None,
+        bounding_box: Optional[BoundingBox] = None,
     ):
         """Add an isosurface of a geological feature to the model
 
@@ -145,7 +148,7 @@ class Loop3DView(pv.Plotter):
             name = geological_feature.name + '_surfaces'
         name = self.increment_name(name)  # , 'surface')
 
-        surfaces = geological_feature.surfaces(value)
+        surfaces = geological_feature.surfaces(value, bounding_box=bounding_box)
         meshes = []
         for surface in surfaces:
             s = surface.vtk()
@@ -468,6 +471,10 @@ class Loop3DView(pv.Plotter):
         geological_feature: BaseFeature,
         scale: Optional[float] = None,
         name: Optional[str] = None,
+        geom='arrow',
+        scalars: Optional[np.ndarray] = None,
+        normalise: bool = False,
+        scale_function: Optional[Callable[[np.ndarray],np.ndarray]] = None,
         pyvista_kwargs: dict = {},
     ) -> pv.Actor:
         """Plot a vector field
@@ -493,7 +500,17 @@ class Loop3DView(pv.Plotter):
         name = self.increment_name(name)  # , 'vector_field')
         vectorfield = geological_feature.vector_field()
         scale = self._get_vector_scale(scale)
-        return self.add_mesh(vectorfield.vtk(scale=scale), name=name, **pyvista_kwargs)
+        return self.add_mesh(
+            vectorfield.vtk(
+                scale=scale,
+                geom=geom,
+                normalise=normalise,
+                scalars=scalars,
+                scale_function=scale_function,
+            ),
+            name=name,
+            **pyvista_kwargs,
+        )
 
     def plot_data(
         self,
@@ -503,6 +520,8 @@ class Loop3DView(pv.Plotter):
         scale: Optional[Union[float, int]] = None,
         geom: str = "arrow",
         name: Optional[str] = None,
+        scalars: Optional[np.ndarray] = None,
+        normalise: bool = True,
         pyvista_kwargs: dict = {},
     ) -> List[pv.Actor]:
         """Add the data associated with a feature to the plotter
@@ -516,11 +535,13 @@ class Loop3DView(pv.Plotter):
         vector : bool, optional
             whether to plot vector data, by default True
         scale : Union[float, int], optional
-            vector scale, by default 10
+            vector scale, by default 1
         geom : str, optional
             vector glyph, by default "arrow"
         name : Optional[str], optional
             name to use in object list, by default None
+        normalise: bool, optional
+            normalise the vectors to be unit norm, by default True
         pyvista_kwargs : dict, optional
             additional kwargs to pass to pyvista add_mesh, by default {}
 
@@ -528,11 +549,19 @@ class Loop3DView(pv.Plotter):
         -------
         List[pv.Actor]
             list of actors added to the pv plotter
+
+        Notes
+        ------
+        When plotting a vector the bounding box is used to scale the vectors. By default
+        the length of the arrows will be 5% of the bounding box. The scale parameter is a
+        multiplier for this value. If you sent normalise to False the vectors will not be normalised
+
         """
         if issubclass(type(feature), BaseFeature):
             feature = [feature]
         scale = self._get_vector_scale(scale)
         actors = []
+        bb = self.model.bounding_box if self.model is not None else None
         for f in feature:
             for d in f.get_data():
                 if isinstance(d, ValuePoints):
@@ -542,7 +571,11 @@ class Loop3DView(pv.Plotter):
                         else:
                             object_name = f'{d.name}_values_{name}'
                         object_name = self.increment_name(object_name)  # , 'values')
-                        actors.append(self.add_mesh(d.vtk(), name=object_name, **pyvista_kwargs))
+                        actors.append(
+                            self.add_mesh(
+                                d.vtk(scalars=scalars), name=object_name, **pyvista_kwargs
+                            )
+                        )
                 if isinstance(d, VectorPoints):
                     if vector:
                         if name is None:
@@ -550,16 +583,18 @@ class Loop3DView(pv.Plotter):
                         else:
                             object_name = f'{d.name}_vectors_{name}'
                         object_name = self.increment_name(object_name)  # , 'vectors')
-                        if geom == "arrow":
-                            geom = pv.Arrow()
-                        elif geom == "disc":
-                            geom = pv.Disc()
-                            geom = geom.rotate_y(90)
-                        else:
-                            raise ValueError(f"Unknown glyph type {geom}")
                         actors.append(
                             self.add_mesh(
-                                d.vtk(geom=geom, scale=scale), name=name, **pyvista_kwargs
+                                d.vtk(
+                                    geom=geom,
+                                    scale=scale,
+                                    scalars=scalars,
+                                    bb=bb,
+                                    tolerance=None,
+                                    normalise=normalise,
+                                ),
+                                name=name,
+                                **pyvista_kwargs,
                             )
                         )
         return actors
@@ -623,17 +658,14 @@ class Loop3DView(pv.Plotter):
                 vector_name = f'{fault.name}_vector_{name}'
             vector_name = self.increment_name(vector_name)
 
-            vectorfield = fault[1].vector_field()
+            vectorfield = fault.vector_field()
             vector_scale = self._get_vector_scale(vector_scale)
             actors.append(
                 self.add_mesh(
                     vectorfield.vtk(
                         scale=vector_scale,
-                        scale_function=(
-                            fault.displacementfeature.evaluate_value
-                            if displacement_scale_vector
-                            else None
-                        ),
+                        normalise=False
+                        
                     ),
                     name=vector_name,
                     **pyvista_kwargs,
@@ -645,7 +677,7 @@ class Loop3DView(pv.Plotter):
             else:
                 volume_name = f'{fault.name}_volume_{name}'
             volume = fault.displacementfeature.scalar_field()
-            volume = volume.vtk().threshold(0.0)
+            volume = volume.vtk().threshold([-1.0,1.0])
             if geom == "arrow":
                 geom = pv.Arrow()
             elif geom == "disc":
