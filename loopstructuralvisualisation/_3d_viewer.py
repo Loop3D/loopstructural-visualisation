@@ -676,7 +676,9 @@ class Loop3DView(pv.Plotter):
                 volume_name = fault.name + '_volume'
             else:
                 volume_name = f'{fault.name}_volume_{name}'
+
             volume = fault.displacementfeature.scalar_field(bounding_box=bounding_box)
+
             volume = volume.vtk().threshold([-1.0, 1.0])
             if geom == "arrow":
                 geom = pv.Arrow()
