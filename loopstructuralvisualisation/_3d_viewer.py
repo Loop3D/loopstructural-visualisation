@@ -475,7 +475,7 @@ class Loop3DView(pv.Plotter):
         geom='arrow',
         scalars: Optional[np.ndarray] = None,
         normalise: bool = False,
-        scale_function: Optional[Callable[[np.ndarray],np.ndarray]] = None,
+        scale_function: Optional[Callable[[np.ndarray], np.ndarray]] = None,
         pyvista_kwargs: dict = {},
         bounding_box: Optional[BoundingBox] = None,
     ) -> pv.Actor:
@@ -653,7 +653,7 @@ class Loop3DView(pv.Plotter):
             else:
                 surface_name = f'{fault.name}_surface_{name}'
             surface_name = self.increment_name(surface_name)
-            surf = fault.surfaces([0],bounding_box=bounding_box)[0]
+            surf = fault.surfaces([0], bounding_box=bounding_box)[0]
             actors.append(self.add_mesh(surf.vtk(), name=surface_name, **pyvista_kwargs))
         if slip_vector:
             if name is None:
@@ -666,11 +666,7 @@ class Loop3DView(pv.Plotter):
             vector_scale = self._get_vector_scale(vector_scale)
             actors.append(
                 self.add_mesh(
-                    vectorfield.vtk(
-                        scale=vector_scale,
-                        normalise=False
-                        
-                    ),
+                    vectorfield.vtk(scale=vector_scale, normalise=False),
                     name=vector_name,
                     **pyvista_kwargs,
                 )
@@ -681,7 +677,7 @@ class Loop3DView(pv.Plotter):
             else:
                 volume_name = f'{fault.name}_volume_{name}'
             volume = fault.displacementfeature.scalar_field(bounding_box=bounding_box)
-            volume = volume.vtk().threshold([-1.0,1.0])
+            volume = volume.vtk().threshold([-1.0, 1.0])
             if geom == "arrow":
                 geom = pv.Arrow()
             elif geom == "disc":
