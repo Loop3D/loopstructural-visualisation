@@ -83,7 +83,7 @@ class Loop3DView(pv.Plotter):
         return model
 
     def _get_vector_scale(self, scale: Optional[Union[float, int]]) -> float:
-        autoscale = 0.0
+        autoscale = 1.0
         if self.model is not None:
             # automatically scale vector data to be 5% of the bounding box length
             autoscale = self.model.bounding_box.length.max() * 0.05
@@ -207,6 +207,7 @@ class Loop3DView(pv.Plotter):
         scalar_bar: bool = False,
         slicer: bool = False,
         name: Optional[str] = None,
+        bounding_box: Optional[BoundingBox] = None,
     ):
         """Plot a volume with the scalar field as the property
         calls feature.scalar_field() to get the scalar field and
@@ -243,7 +244,7 @@ class Loop3DView(pv.Plotter):
             name = geological_feature.name + '_scalar_field'
         name = self.increment_name(name)  # , 'scalar_field')
 
-        volume = geological_feature.scalar_field().vtk()
+        volume = geological_feature.scalar_field(bounding_box=bounding_box).vtk()
         if vmin is not None:
             pyvista_kwargs["clim"][0] = vmin
         if vmax is not None:
@@ -476,6 +477,7 @@ class Loop3DView(pv.Plotter):
         normalise: bool = False,
         scale_function: Optional[Callable[[np.ndarray],np.ndarray]] = None,
         pyvista_kwargs: dict = {},
+        bounding_box: Optional[BoundingBox] = None,
     ) -> pv.Actor:
         """Plot a vector field
 
@@ -498,8 +500,9 @@ class Loop3DView(pv.Plotter):
         if name is None:
             name = geological_feature.name + '_vector_field'
         name = self.increment_name(name)  # , 'vector_field')
-        vectorfield = geological_feature.vector_field()
+        vectorfield = geological_feature.vector_field(bounding_box=bounding_box)
         scale = self._get_vector_scale(scale)
+        print(scale)
         return self.add_mesh(
             vectorfield.vtk(
                 scale=scale,
@@ -615,6 +618,7 @@ class Loop3DView(pv.Plotter):
         name: Optional[str] = None,
         geom: str = "arrow",
         pyvista_kwargs: dict = {},
+        bounding_box: Optional[BoundingBox] = None,
     ) -> List[pv.Actor]:
         """Plot a fault including the surface, slip vector and displacement volume
 
@@ -649,7 +653,7 @@ class Loop3DView(pv.Plotter):
             else:
                 surface_name = f'{fault.name}_surface_{name}'
             surface_name = self.increment_name(surface_name)
-            surf = fault.surfaces([0])[0]
+            surf = fault.surfaces([0],bounding_box=bounding_box)[0]
             actors.append(self.add_mesh(surf.vtk(), name=surface_name, **pyvista_kwargs))
         if slip_vector:
             if name is None:
@@ -658,7 +662,7 @@ class Loop3DView(pv.Plotter):
                 vector_name = f'{fault.name}_vector_{name}'
             vector_name = self.increment_name(vector_name)
 
-            vectorfield = fault.vector_field()
+            vectorfield = fault.vector_field(bounding_box=bounding_box)
             vector_scale = self._get_vector_scale(vector_scale)
             actors.append(
                 self.add_mesh(
@@ -676,7 +680,7 @@ class Loop3DView(pv.Plotter):
                 volume_name = fault.name + '_volume'
             else:
                 volume_name = f'{fault.name}_volume_{name}'
-            volume = fault.displacementfeature.scalar_field()
+            volume = fault.displacementfeature.scalar_field(bounding_box=bounding_box)
             volume = volume.vtk().threshold([-1.0,1.0])
             if geom == "arrow":
                 geom = pv.Arrow()
@@ -713,7 +717,7 @@ class Loop3DView(pv.Plotter):
             name = fault.name + '_ellipsoid'
         name = self.increment_name(name)
         ellipsoid = fault.fault_ellipsoid()
-        return self.add_mesh(ellipsoid.vtk(), name=name, **pyvista_kwargs)
+        return self.add_mesh(ellipsoid, name=name, **pyvista_kwargs)
 
     def rotate(self, angles: np.ndarray):
         """Rotate the camera by the given angles
