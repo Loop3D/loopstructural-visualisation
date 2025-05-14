@@ -109,7 +109,7 @@ class Loop3DView(pv.Plotter):
         vmin: Optional[float] = None,
         vmax: Optional[float] = None,
         pyvista_kwargs: dict = {},
-        scalar_bar: bool = False,
+        show_scalar_bar: bool = False,
         slicer: bool = False,
         name: Optional[str] = None,
         bounding_box: Optional[BoundingBox] = None,
@@ -140,7 +140,7 @@ class Loop3DView(pv.Plotter):
             name of the object, by default None
         slicer : bool, optional
             If an interactive plane slicing tool should be added, by default False
-        scalar_bar : bool, optional
+        show_scalar_bar : bool, optional
             Whether to show the scalar bar, by default False
         """
 
@@ -192,7 +192,7 @@ class Loop3DView(pv.Plotter):
 
         except ValueError:
             logger.warning("No surfaces to plot")
-        if paint_with is not None and not scalar_bar:
+        if paint_with is not None and not show_scalar_bar:
             self.remove_scalar_bar('values')
         return actor
 
@@ -204,7 +204,7 @@ class Loop3DView(pv.Plotter):
         vmax: Optional[float] = None,
         opacity: Optional[float] = None,
         pyvista_kwargs: dict = {},
-        scalar_bar: bool = False,
+        show_scalar_bar: bool = False,
         slicer: bool = False,
         name: Optional[str] = None,
         bounding_box: Optional[BoundingBox] = None,
@@ -227,7 +227,7 @@ class Loop3DView(pv.Plotter):
             opacity of the object, by default None
         pyvista_kwargs : dict, optional
             additional kwargs sent to add_mesh, by default {}
-        scalar_bar : bool, optional
+        show_scalar_bar : bool, optional
             whether to show or hide the scalar bar, by default False
         slicer : bool, optional
             whether to plot using a plane slicer widget, by default False
@@ -255,7 +255,7 @@ class Loop3DView(pv.Plotter):
             )
         else:
             actor = self.add_mesh(volume, cmap=cmap, opacity=opacity, name=name, **pyvista_kwargs)
-        if not scalar_bar:
+        if not show_scalar_bar:
             self.remove_scalar_bar(geological_feature.name)
         return actor
 
@@ -264,7 +264,7 @@ class Loop3DView(pv.Plotter):
         cmap=None,
         model=None,
         pyvista_kwargs={},
-        scalar_bar: bool = False,
+        show_scalar_bar: bool = False,
         slicer: bool = False,
         threshold: Optional[Union[float, List[float]]] = None,
         name: Optional[str] = None,
@@ -283,7 +283,7 @@ class Loop3DView(pv.Plotter):
             the model to pass if it is not the active geologicalmodel, by default None
         pyvista_kwargs : dict, optional
             additional arguments to be passed to pyvista add_mesh, by default {}
-        scalar_bar : bool, optional
+        show_scalar_bar : bool, optional
             whether show/hide the scalar bar, by default False
         slicer : bool, optional
             If an interactive plane slicing tool should be added, by default False
@@ -312,7 +312,7 @@ class Loop3DView(pv.Plotter):
         else:
             actor = self.add_mesh(block, cmap=cmap, name=name, **pyvista_kwargs)
 
-        if not scalar_bar:
+        if not show_scalar_bar:
             self.remove_scalar_bar('stratigraphy')
         return actor
 
@@ -323,7 +323,7 @@ class Loop3DView(pv.Plotter):
         model=None,
         cmap="rainbow",
         pyvista_kwargs={},
-        scalar_bar: bool = False,
+        show_scalar_bar: bool = False,
         name: Optional[str] = None,
     ):
         """Plot the dispalcement magnitude for faults in the model
@@ -341,7 +341,7 @@ class Loop3DView(pv.Plotter):
             _description_, by default "rainbow"
         pyvista_kwargs : dict, optional
             _description_, by default {}
-        scalar_bar : bool, optional
+        show_scalar_bar : bool, optional
             _description_, by default False
         """
         if name is None:
@@ -361,7 +361,7 @@ class Loop3DView(pv.Plotter):
         volume = bounding_box.vtk()
         volume['displacement'] = displacement_value
         actor = self.add_mesh(volume, cmap=cmap, **pyvista_kwargs)
-        if not scalar_bar:
+        if not show_scalar_bar:
             self.remove_scalar_bar('displacement')
         return actor
 
@@ -400,7 +400,7 @@ class Loop3DView(pv.Plotter):
         model: Optional[GeologicalModel] = None,
         fault_colour: str = "black",
         pyvista_kwargs: dict = {},
-        scalar_bar: bool = False,
+        show_scalar_bar: bool = False,
         name: Optional[str] = None,
     ):
         """Plot the surfaces of the model
@@ -419,7 +419,7 @@ class Loop3DView(pv.Plotter):
             colour for the fault surfaces, by default "black"
         pyvista_kwargs : dict, optional
             Additional kwargs to send to add_mesh, by default {}
-        scalar_bar : bool, optional
+        show_scalar_bar : bool, optional
             whether to add the scalar bar, by default False
         name : Optional[str], optional
             name to add objects to object list with, by default None
@@ -452,7 +452,7 @@ class Loop3DView(pv.Plotter):
                     **pyvista_kwargs,
                 )
             )
-            if not scalar_bar:
+            if not show_scalar_bar:
                 self.remove_scalar_bar()
         if faults:
             fault_list = model.get_fault_surfaces()
