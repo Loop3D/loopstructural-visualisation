@@ -502,7 +502,7 @@ class Loop3DView(pv.Plotter):
         name = self.increment_name(name)  # , 'vector_field')
         vectorfield = geological_feature.vector_field(bounding_box=bounding_box)
         scale = self._get_vector_scale(scale)
-        print(scale)
+
         return self.add_mesh(
             vectorfield.vtk(
                 scale=scale,
