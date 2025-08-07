@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.16](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.15...v0.1.16) (2025-05-27)
+
+
+### Bug Fixes
+
+* Change scalar_bar arg to show_scalar_bar  ([949b3eb](https://github.com/Loop3D/loopstructural-visualisation/commit/949b3eb23c3bf38b67a9cf1f9a332aa3defdac7b))
+
+## [0.1.15](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.14...v0.1.15) (2025-04-17)
+
+
+### Bug Fixes
+
+* release 0.1.15 ([2e4f5c9](https://github.com/Loop3D/loopstructural-visualisation/commit/2e4f5c9628177916b7174dd48e8a321534a116b1))
+
 ## [0.1.14](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.13...v0.1.14) (2025-02-20)
 
 
