@@ -502,7 +502,6 @@ class Loop3DView(pv.Plotter):
         name = self.increment_name(name)  # , 'vector_field')
         vectorfield = geological_feature.vector_field(bounding_box=bounding_box)
         scale = self._get_vector_scale(scale)
-        print(scale)
         return self.add_mesh(
             vectorfield.vtk(
                 scale=scale,
@@ -562,7 +561,9 @@ class Loop3DView(pv.Plotter):
         """
         if issubclass(type(feature), BaseFeature):
             feature = [feature]
+        logger.info(f"Scale vectors by {scale}")
         scale = self._get_vector_scale(scale)
+        logger.info(f"Vector scale is {scale}")
         actors = []
         bb = self.model.bounding_box if self.model is not None else None
         for f in feature:
