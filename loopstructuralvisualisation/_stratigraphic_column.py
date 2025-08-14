@@ -28,7 +28,7 @@ class StratigraphicColumnView:
         prev_coords = [0, 0]
 
         # iterate through groups, skipping faults
-        s_id = 0
+        
         for g in reversed(self.model.stratigraphic_column.get_groups()):
             for u in g.units:
                 n_units += 1
