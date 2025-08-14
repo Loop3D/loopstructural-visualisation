@@ -28,15 +28,13 @@ class StratigraphicColumnView:
         prev_coords = [0, 0]
 
         # iterate through groups, skipping faults
-        
+
         for g in reversed(self.model.stratigraphic_column.get_groups()):
             for u in g.units:
                 n_units += 1
 
                 ymax = total_height
-                ymin = ymax - (
-                    u.thickness
-                )
+                ymin = ymax - (u.thickness)
 
                 if not np.isfinite(ymin):
                     ymin = prev_coords[1] - (prev_coords[1] - prev_coords[0]) * (1 + rng.random())
@@ -52,7 +50,7 @@ class StratigraphicColumnView:
                     self.ax.annotate(self.labels[u], xy)
                 else:
                     self.ax.annotate(u.name, xy)
-        
+
         if self.cmap is None:
             import matplotlib.colors as colors
 

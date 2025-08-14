@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.17](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.16...v0.1.17) (2025-08-14)
+
+
+### Bug Fixes
+
+* linting ([87257f4](https://github.com/Loop3D/loopstructural-visualisation/commit/87257f43b8915061c7f8e3334ded449feaad35d4))
+* update for new stratigraphic colum in LoopStructural ([56def61](https://github.com/Loop3D/loopstructural-visualisation/commit/56def61d639492d5d60ccc9bfb74c54e9bafadd6))
+
 ## [0.1.16](https://github.com/Loop3D/loopstructural-visualisation/compare/v0.1.15...v0.1.16) (2025-05-27)
 
 
