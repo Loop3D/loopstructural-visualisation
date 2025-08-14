@@ -28,17 +28,14 @@ class StratigraphicColumnView:
         prev_coords = [0, 0]
 
         # iterate through groups, skipping faults
-        for g in reversed(self.model.stratigraphic_column.keys()):
-            if g == "faults":
-                continue
-            # iterate through units in each group
-            for u in reversed(self.model.stratigraphic_column[g].keys()):
+        s_id = 0
+        for g in reversed(self.model.stratigraphic_column.get_groups()):
+            for u in g.units:
                 n_units += 1
 
                 ymax = total_height
                 ymin = ymax - (
-                    self.model.stratigraphic_column[g][u]["max"]
-                    - self.model.stratigraphic_column[g][u]["min"]
+                    u.thickness
                 )
 
                 if not np.isfinite(ymin):
@@ -54,20 +51,21 @@ class StratigraphicColumnView:
                 if self.labels:
                     self.ax.annotate(self.labels[u], xy)
                 else:
-                    self.ax.annotate(u, xy)
+                    self.ax.annotate(u.name, xy)
+        
         if self.cmap is None:
             import matplotlib.colors as colors
 
             colours = []
             boundaries = []
             data = []
-            for g in self.model.stratigraphic_column.keys():
+            for g in self.model.stratigraphic_column.get_groups():
                 if g == "faults":
                     continue
-                for v in self.model.stratigraphic_column[g].values():
-                    data.append((v["id"], v["colour"]))
-                    colours.append(v["colour"])
-                    boundaries.append(v["id"])  # print(u,v)
+                for u in g.units:
+                    data.append((u.id, u.colour))
+                    colours.append(u.colour)
+                    boundaries.append(u.id)  # print(u,v)
             cmap = colors.ListedColormap(colours)
         else:
             cmap = cm.get_cmap(self.cmap, n_units - 1)

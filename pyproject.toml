@@ -31,7 +31,7 @@ classifiers = [
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
 ]
-dependencies = ["numpy>=1.18", "pyvista>=0.42", "LoopStructural>=1.6.8"]
+dependencies = ["numpy>=1.18", "pyvista>=0.42", "LoopStructural>=1.6.17"]
 dynamic = ['version']
 
 [project.optional-dependencies]

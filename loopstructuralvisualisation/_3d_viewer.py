@@ -10,7 +10,6 @@ from LoopStructural.datatypes import BoundingBox
 from LoopStructural import GeologicalModel
 from LoopStructural.utils import getLogger
 from typing import Callable, Union, Optional, List
-from ._colours import random_colour
 
 logger = getLogger(__name__)
 
@@ -365,32 +364,7 @@ class Loop3DView(pv.Plotter):
             self.remove_scalar_bar('displacement')
         return actor
 
-    def _build_stratigraphic_cmap(self, model):
-        try:
-            import matplotlib.colors as colors
-
-            colours = []
-            boundaries = []
-            data = []
-            for g in model.stratigraphic_column.keys():
-                if g == "faults":
-                    continue
-                for v in model.stratigraphic_column[g].values():
-                    colour = v.get("colour", None)
-                    if not isinstance(colour, str):
-                        try:
-                            v['colour'] = colors.to_hex(colour)
-                        except ValueError:
-                            logger.warning(f"Cannot convert colour {colour} to hex, using default")
-                            v['colour'] = random_colour()
-                    data.append((v["id"], v["colour"]))
-                    colours.append(v["colour"])
-                    boundaries.append(v["id"])  # print(u,v)
-            cmap = colors.ListedColormap(colours)
-        except ImportError:
-            logger.warning("Cannot use predefined colours as I can't import matplotlib")
-            cmap = "tab20"
-        return cmap
+    
 
     def plot_model_surfaces(
         self,
@@ -436,7 +410,7 @@ class Loop3DView(pv.Plotter):
             strati_surfaces = []
             surfaces = model.get_stratigraphic_surfaces()
             if cmap is None:
-                cmap = self._build_stratigraphic_cmap(model).colors
+                cmap = model.stratigraphic_column.cmap().colors
             for s in surfaces:
                 strati_surfaces.append(s.vtk())
             if name is None:
