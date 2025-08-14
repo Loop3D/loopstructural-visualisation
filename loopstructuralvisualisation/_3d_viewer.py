@@ -364,8 +364,6 @@ class Loop3DView(pv.Plotter):
             self.remove_scalar_bar('displacement')
         return actor
 
-    
-
     def plot_model_surfaces(
         self,
         strati: bool = True,
